@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Cidade Dorme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-size: 1.25rem;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      
+      body {
+        background-color: rgb(15,135,205);
+        transition: all 1s ease;
+      }
+
+      header {
+        padding: 1.25rem 2% 0;
+        text-shadow: 0 0 1px #00000080;
+        color: #fff;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      #role-objective {
+        margin-top: 0.5rem;
+        text-align: center;
+        line-height: 1.75rem;
+        background-color: #0000000f;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        width: 98%;
+      }
+
+      .players {
+        border-radius: 1rem;
+        border: 1px solid #bbbbbb;
+        background-color: #fff;
+        width: 98%;
+        margin: 1rem auto;
+        padding: 0 1rem 2.5rem;
+        color: rgb(70 70 70);
+      }
+
+      .players h1 {
+        padding: 0.5rem 0 1rem;
+      }
+      
+      .players-list .player {
+        height: 4rem;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #bbbbbb;
+        font-weight: 600;
+      }
+
+      .players-list .player:first-of-type {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+      }
+
+      .players-list .player:last-of-type {
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
+
+      .fa-solid {
+        font-size: 1.5rem;
+      }
+
+      .board {
+        display: flex;
+        color: #fff;
+        margin: auto;
+        width: 75%;
+      }
+
+      .board div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+      }
+
+      footer {
+        margin: 1rem 0;
+      }
+
+      .dead {
+        background-color: #a8a3a3;
+      }
+
+      .dead::after {
+          content: " ";
+          width: 80%;
+          height: 3px;
+          background-color: #570808;
+          position: absolute;
+          left: 10%;
+      }
+
+      .blood {
+        width: 100svw;
+        position: absolute;
+        top: 0;
+        transition: all 1.5s ease-in-out;
+        transform: translateY(-100%);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>
+        <div id="role"></div>
+        <div id="user"></div>
+      </h1>
+      <p id="role-objective"></p>
+    </header>
+    <section class="players">
+      <h1>JOGADORES</h1>
+      <section class="players-list"></section>
+    </section>
+    <footer>
+      <div class="board">
+        <div>
+          <div>MORTES</div>
+          <div id="deaths"></div>
+        </div>
+        <div>
+          <div>JOGADORES</div>
+          <div id="total-players"></div>
+        </div>
+      </div>
+    </footer>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="blood"><path fill="rgb(139, 1, 0)" fill-opacity="1" d="M0,224L9.6,218.7C19.2,213,38,203,58,208C76.8,213,96,235,115,250.7C134.4,267,154,277,173,272C192,267,211,245,230,202.7C249.6,160,269,96,288,85.3C307.2,75,326,117,346,154.7C364.8,192,384,224,403,234.7C422.4,245,442,235,461,208C480,181,499,139,518,101.3C537.6,64,557,32,576,58.7C595.2,85,614,171,634,181.3C652.8,192,672,128,691,133.3C710.4,139,730,213,749,245.3C768,277,787,267,806,224C825.6,181,845,107,864,101.3C883.2,96,902,160,922,192C940.8,224,960,224,979,186.7C998.4,149,1018,75,1037,74.7C1056,75,1075,149,1094,160C1113.6,171,1133,117,1152,106.7C1171.2,96,1190,128,1210,133.3C1228.8,139,1248,117,1267,128C1286.4,139,1306,181,1325,176C1344,171,1363,117,1382,117.3C1401.6,117,1421,171,1430,197.3L1440,224L1440,0L1430.4,0C1420.8,0,1402,0,1382,0C1363.2,0,1344,0,1325,0C1305.6,0,1286,0,1267,0C1248,0,1229,0,1210,0C1190.4,0,1171,0,1152,0C1132.8,0,1114,0,1094,0C1075.2,0,1056,0,1037,0C1017.6,0,998,0,979,0C960,0,941,0,922,0C902.4,0,883,0,864,0C844.8,0,826,0,806,0C787.2,0,768,0,749,0C729.6,0,710,0,691,0C672,0,653,0,634,0C614.4,0,595,0,576,0C556.8,0,538,0,518,0C499.2,0,480,0,461,0C441.6,0,422,0,403,0C384,0,365,0,346,0C326.4,0,307,0,288,0C268.8,0,250,0,230,0C211.2,0,192,0,173,0C153.6,0,134,0,115,0C96,0,77,0,58,0C38.4,0,19,0,10,0L0,0Z"></path></svg>
+  </body>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const roleEl = document.getElementById("role");
+    const objectiveEl = document.getElementById("role-objective");
+    const playersList = document.querySelector(".players-list");
+    const deathsEl = document.getElementById("deaths");
+    const totalPlayersEl = document.getElementById("total-players");
+
+    const createPlayersList = (users) => {
+      playersList.innerHTML = '';
+      Object.values(users).forEach((user) => {
+        const { name, role, alive, icon, objective } = user;
+
+        console.log(alive)
+  
+        const playerElement = `
+          <div class="player ${Number(alive) ? "" : "dead"}" id=${name} data-name=${name} data-alive=${alive}"
+          >
+            ${ name }
+            <i class="fa-solid ${Number(alive) ? "fa-users" : "fa-skull"}"></i>
+          </div>
+        `
+        
+        playersList.innerHTML += playerElement;
+      });
+    };
+
+    const updateUserData = (user) => {
+      document.getElementById("user").textContent = user.name;
+      roleEl.textContent = user.role;
+      objectiveEl.textContent = user.objective;
+      if (user.alive && !Number(user.alive)) {
+        document.querySelector("body").style.backgroundColor = "rgb(225, 216, 195)";
+        document.querySelector(".blood").style.transform = "translateY(0%)";
+      } else {
+        document.querySelector("body").style.backgroundColor = "rgb(15,135,205)";
+        document.querySelector(".blood").style.transform = "translateY(-100%)";
+      }
+    }
+
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    document.addEventListener("DOMContentLoaded", (e) => {
+      updateUserData(user);
+      socket.emit("players");
+    });
+
+    socket.on("players", (data) => {   
+      createPlayersList(data);
+      updateUserData(data[user.name.toLowerCase()]);
+    });
+  </script>
+</html>

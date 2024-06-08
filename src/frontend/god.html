@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Cidade Dorme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-size: 1.25rem;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      
+      body {
+        background-color: rgb(15,135,205);
+      }
+
+      header {
+        padding: 1.25rem 2% 0;
+        text-shadow: 0 0 1px #00000080;
+        color: #fff;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      #role-objective {
+        margin-top: 0.5rem;
+        text-align: center;
+        line-height: 1.75rem;
+        background-color: #0000000f;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        width: 98%;
+      }
+
+      .players {
+        border-radius: 1rem;
+        border: 1px solid #bbbbbb;
+        background-color: #fff;
+        width: 98%;
+        margin: 1rem auto;
+        padding: 0 1rem 2.5rem;
+        color: rgb(70 70 70);
+      }
+
+      .players h1 {
+        padding: 0.5rem 0 1rem;
+      }
+      
+      .players-list .player {
+        height: 4rem;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #bbbbbb;
+        font-weight: 600;
+      }
+
+      .players-list .player:first-of-type {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+      }
+
+      .players-list .player:last-of-type {
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
+
+      #roles {
+        width: 90%;
+        margin: 150px auto;
+        padding: 1rem;
+        border: 1px solid rgb(70 70 70);
+        border-radius: 1rem;
+        background-color: #ededed;
+      }
+
+      #selected-user {
+        text-align: center;
+      }
+
+      #roles section {
+        margin: auto;
+      }
+
+      .roles-btns button {
+        width: 80px;
+        background-color: rgb(240, 240, 240);
+        border: 1px solid rgba(70, 70, 70, 0.6);
+        padding: 15px;
+        margin: 5px;
+        margin-top: 10px;
+        border-radius: 50%;
+        color: rgb(70 70 70);
+        outline: none;
+      }
+
+      #close-btn,
+      #update-users-btn,
+      #random-update-users-btn {
+        display: block;
+        width: 90%;
+        margin: 1rem auto 0;
+        padding: 0.75rem;
+        font-size: 1.25rem;
+        background-color: rgb(227, 5, 5);
+        color: #fff;
+        border-radius: 1rem;
+        border: none;
+      }
+
+      #update-users-btn, #random-update-users-btn {
+        background-color: rgb(0, 212, 0);
+      }
+
+      .fa-solid {
+        font-size: 1.5rem;
+      }
+
+      .board {
+        display: flex;
+        color: #fff;
+        margin: auto;
+        width: 75%;
+      }
+
+      .board div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+      }
+
+      footer {
+        margin: 1rem 0;
+      }
+
+      .dead {
+        background-color: #a8a3a3;
+      }
+
+      .dead::after {
+          content: " ";
+          width: 80%;
+          height: 3px;
+          background-color: #570808;
+          position: absolute;
+          left: 10%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>
+        <div id="role"></div>
+        <div id="user"></div>
+      </h1>
+      <p id="role-objective"></p>
+    </header>
+    <section class="players">
+      <h1>JOGADORES</h1>
+      <section class="players-list"></section>
+      <button id="update-users-btn">CONFIRMAR</button>
+      <button id="random-roles">DISTRIBUIR PAPEIS</button>
+    </section>
+    <dialog id="roles">
+      <h3 id="selected-user">Test</h3>
+      <section class="roles-btns">
+        <button data-role="city" data-icon="fa-users" data-objective="Seu objetivo é sobreviver, e ajudar a cidade a desvendar o assasino" class="pick-role-btn">
+          <h4>Cidade</h4>
+          <div><i class="fa-solid fa-users"></i></div>
+        </button>
+        <button data-role="detective" data-icon="fa-user-secret" data-objective="Seu objetivo é descobrir quem é o assasino, e prende-lo" class="pick-role-btn">
+          <h4>Detetive</h4>
+          <div><i class="fa-solid fa-user-secret"></i></div>
+        </button>
+        <button data-role="angel" data-icon="fa-hand-holding-heart" data-objective="Você pode escolher alguém para proteger e deixar imune por uma rodada de ser assasinado" class="pick-role-btn">
+          <h4>Anjo</h4>
+          <div><i class="fa-solid fa-hand-holding-heart"></i></div>
+        </button>
+        <button data-role="shifter" data-icon="fa-person-military-to-person" data-objective="Você pode trocar de papel com outro jogador" class="pick-role-btn">
+          <h4>Shifter</h4>
+          <div><i class="fa-solid fa-person-military-to-person"></i></div>
+        </button>
+        <button data-role="joker" data-icon="fa-masks-theater" data-objective="Seu objetivo é ser eliminado" class="pick-role-btn">
+          <h4>Joker</h4>
+          <div><i class="fa-solid fa-masks-theater"></i></div>
+        </button>
+        <button data-role="dead" data-icon="fa-skull" class="pick-role-btn" data-objective="Morto não fala!">
+          <h4>Morto</h4>
+          <div><i class="fa-solid fa-skull"></i></div>
+        </button>
+      </section>
+      <button id="close-btn">FECHAR</button>
+    </dialog>
+    <footer>
+      <div class="board">
+        <div>
+          <div>MORTES</div>
+          <div id="deaths"></div>
+        </div>
+        <div>
+          <div>JOGADORES</div>
+          <div id="total-players"></div>
+        </div>
+      </div>
+    </footer>
+  </body>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const roleEl = document.getElementById("role");
+    const objectiveEl = document.getElementById("role-objective");
+    const playersList = document.querySelector(".players-list");
+    const deathsEl = document.getElementById("deaths");
+    const totalPlayersEl = document.getElementById("total-players");
+
+    const rolesEl = document.getElementById("roles");
+    const closeRolesEl = document.getElementById("close-btn");
+    closeRolesEl.addEventListener("click", () => rolesEl.close());
+    const pickRoleBtns = document.querySelectorAll(".pick-role-btn");
+    pickRoleBtns.forEach(btn => btn.addEventListener("click", (e) => {
+      setUserData(btn.dataset);
+    }));
+    const selectedUser = document.getElementById("selected-user");
+    const updateUsersBtn = document.getElementById("update-users-btn");
+
+    const setUserData = ({role, icon, objective}) => {
+      const user = selectedUser.textContent;
+      const userCard = document.getElementById(user);
+      userCard.querySelector(".fa-solid").className = `fa-solid ${icon}`;
+      userCard.dataset.alive = role === "dead" ? 0 : 1;
+      userCard.dataset.icon = icon;
+      userCard.dataset.role = role;
+      userCard.dataset.objective = objective;
+    };
+
+    const bindFunctions = () => {
+      document.querySelectorAll(".player").forEach(player => player.addEventListener("click", (e) => {
+        selectedUser.textContent = player.dataset.name;
+        rolesEl.showModal();
+      }));
+    };
+
+    const createPlayersList = (users) => {
+      playersList.innerHTML = '';
+      Object.values(users).forEach((user) => {
+        const { name, role, alive, icon, objective } = user;
+  
+        const playerElement = `
+          <div class="player" id=${name} data-name=${name} data-role=${role} data-alive=${alive} data-icon=${icon} data-objective="${objective}"
+          >
+            ${ name }
+            <i class="fa-solid ${icon}"></i>
+          </div>
+        `
+        
+        playersList.innerHTML += playerElement;
+      });
+    };
+
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    document.addEventListener("DOMContentLoaded", (e) => {
+      document.getElementById("user").textContent = user.user;
+      roleEl.textContent = user.role;
+      objectiveEl.textContent = user.objective;
+      socket.emit("players");
+    });
+
+    socket.on("players", (data) => {
+      createPlayersList(data);
+      bindFunctions();
+    });
+
+    updateUsersBtn.addEventListener("click", () => {
+      const users = [...document.querySelectorAll(".player")]
+        .map(player => Object.assign({}, player.dataset));
+      socket.emit("update-users", users);
+    });
+
+
+    const roles = {
+      assasin: {
+        icon: 'fa-person-rifle',
+        role: 'assasin',
+        objective: 'Seu objetivo é assasinar todos e não ser pego'
+      },
+      detective: {
+        icon: 'fa-user-secret',
+        role: 'detective',
+        objective: 'Seu objetivo é descobrir quem é o assasino, e prende-lo'
+      },
+      angel: {
+        icon: 'fa-hand-holding-heart',
+        role: 'angel',
+        objective: 'Você pode escolher alguém para proteger e deixar imune por uma rodada de ser assasinado'
+      },
+      shifter: {
+        icon: 'fa-person-military-to-person',
+        role: 'shifter',
+        objective: 'Você pode trocar de papel com outro jogador'
+      },
+      joker: {
+        icon: 'fa-masks-theater',
+        role: 'joker',
+        objective: 'Seu objetivo é ser eliminado'
+      },
+    };
+
+    const asignRoles = () => {
+      socket.emit("players");
+
+      socket.on("players", (players) => {
+        const arrayPlayers = Object.keys(players);
+        const rolesArr = Object.keys(roles);
+
+        const getRandomPlayer = () => {
+          const randomIndex = Math.floor(Math.random()*arrayPlayers.length);
+          const randomPlayer = arrayPlayers[randomIndex];
+          arrayPlayers.splice(randomIndex, 1);
+          return randomPlayer;
+        };
+
+        const playersRoles = {};
+        rolesArr.forEach((role) => {
+          if (arrayPlayers.length) {
+            const userName = getRandomPlayer();
+            playersRoles[userName] = roles[role];
+            playersRoles[userName].name = userName.charAt(0).toUpperCase() + userName.slice(1);
+            playersRoles[userName].alive = 1;
+          }
+        });
+        
+        arrayPlayers.forEach((player) => playersRoles[player] = players[player]);
+        console.log({playersRoles})
+        createPlayersList(playersRoles);
+      });
+    };
+
+    document.getElementById("random-roles").addEventListener("click", () => asignRoles());
+  </script>
+</html>
